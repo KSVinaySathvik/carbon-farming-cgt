@@ -1,8 +1,27 @@
 # Cooperative Game Theory for Smallholder Carbon Farming
 
-Code for the paper *A Cooperative Game Theoretic Approach to Sustainable, Smallholder Carbon Farming* (Game Theory Lab, IISc).
+[![tests](https://github.com/SummmerKing/carbon-farming-cgt/actions/workflows/tests.yml/badge.svg)](https://github.com/SummmerKing/carbon-farming-cgt/actions/workflows/tests.yml)
 
-Smallholder farms are usually too small to pay for carbon certification on their own. This project models farmers pooling their land into a coalition that is certified together. Each coalition chooses a portfolio of carbon-farming practices for its members (joint portfolio optimization), and the pooled carbon surplus is then shared using cooperative game theory: the Shapley value, the core, the least core and the nucleolus, compared against area-proportional and attributable-revenue baselines. For up to 16 farmers every coalition is solved exactly; larger populations use sampled coalitions and antithetic Monte Carlo Shapley estimates.
+Code for *A Cooperative Game Theoretic Approach to Sustainable, Smallholder Carbon Farming* (Game Theory Lab, IISc).
+
+Carbon credits could pay smallholder farmers for adopting practices such as direct seeded rice, alternate wetting and drying or biochar, but monitoring, reporting and verification (MRV) and transaction costs are largely fixed, so a farm of under one hectare cannot pay for certification alone. This project models farmers who pool their land into a coalition that is certified together:
+
+1. **Joint portfolio optimization.** For any coalition S, choose a practice portfolio for each member to maximize total economic surplus (carbon revenue plus private yield and cost effects, minus certification cost), subject to each farmer's budget and affordability constraints. The problem decomposes by farmer, so v(S) is computed exactly for all 2^15 coalitions in a fraction of a second.
+2. **Sharing the pooled surplus.** Compare the Shapley value, the core (centroid and per-farmer range), the least core and the nucleolus against area-proportional and attributable-revenue baselines, and test each allocation for blocking coalitions.
+
+## Key findings
+
+On 10 benchmark panels of 15 farmers (exact, all coalitions):
+
+- **No farmer can certify alone** at any carbon price under the baseline budget. Even with the budget limit removed, the median solo break-even price is about $432/tCO2e, against a baseline of $60.
+- **The grand coalition certifies in every panel**, and its pooled carbon revenue covers certification from a median of about $44/tCO2e.
+- **The core is non-empty in every run**, so the least core and the nucleolus are always stable. Area-proportional sharing becomes unstable when farmers' sequestration potential varies widely (at $150/tCO2e and high variation it is stable in only 10-50% of panels). The Shapley value holds up much better.
+
+![Effect of farm size on the value of cooperation](results/figures/a2_farm_scale.png)
+
+*Scaling every farm by a factor k: no farmer can certify alone until farms are about 3x the baseline size, while the coalition certifies at every scale from k = 1.*
+
+All tables and figures are in [`results/SUMMARY.md`](results/SUMMARY.md).
 
 ## Layout
 
@@ -16,33 +35,31 @@ carbonfarm/
 experiments/
   run_baseline.py        one farmer panel, any n
   ablations/             a1 budget, a2 farm scale, a3 cost components, a4 MRV scaling,
-                         a5 carbon price, a6 allocation comparison, a7 CMP noise
+                         a5 carbon price, a6 allocation comparison, a7 sequestration noise
   run_all.py             tests + all ablations + results/SUMMARY.md
   check_structure.py     superadditivity and convexity over all coalitions
-  diagnostics_mc_shapley.py
-tests/                   paper instances, solver unit tests
+tests/                   paper instances and solver tests on games with known answers
 data/Dataset_USD/        practice tables as CSV
-results/                 outputs of the runs in the paper (CSV, figures, SUMMARY.md)
+results/                 outputs of the runs in the paper
 ```
 
-## Setup
+## Setup and usage
 
 ```bash
 pip install -r requirements.txt
-```
-
-Gurobi is the default solver. Without a licence the code falls back to HiGHS (SciPy + CVXPY). The size-limited pip licence of Gurobi cannot hold the n = 15 least-core LPs (32,766 rows); those models switch to HiGHS with a warning.
-
-## Usage
-
-```bash
 python -m pytest tests -q                       # a few seconds
 python -m experiments.run_baseline              # panel 42, n = 15
 python -m experiments.ablations.a1_budget       # a single ablation
 python -m experiments.run_all                   # everything, writes results/SUMMARY.md
 ```
 
-Solver choice: `--solver gurobi|highs|auto` or the `CARBONFARM_SOLVER` environment variable. Ablations also take `--seeds k` (first k of the 10 panels), `--jobs` and `--plot-only`.
+Gurobi is the default solver. Without a licence the code falls back to HiGHS (SciPy + CVXPY). The size-limited pip licence of Gurobi cannot hold the n = 15 least-core LPs (32,766 rows), so those models switch to HiGHS with a warning. Choose the solver with `--solver gurobi|highs|auto` or `CARBONFARM_SOLVER`. Ablations also take `--seeds k` (first k of the 10 panels), `--jobs` and `--plot-only`.
+
+For more than 16 farmers the code samples coalitions (always keeping every singleton and co-singleton) and estimates Shapley values with antithetic Monte Carlo:
+
+```bash
+python -m experiments.run_baseline --n 250 --mc-sets 15000 --mc-perms 1250
+```
 
 ## Ablations
 
@@ -55,7 +72,3 @@ Solver choice: `--solver gurobi|highs|auto` or the `CARBONFARM_SOLVER` environme
 | 5 | `a5_carbon_price` | carbon price 10 to 500 $/tCO2e | same, plus break-even prices |
 | 6 | `a6_allocation_comparison` | baseline, 10 panels | per-farmer shares and payoffs, stability, L1 distances, equity, core ranges |
 | 7 | `a7_cmp_noise` | farmer-specific sequestration noise | when each sharing rule becomes unstable |
-
-The core is a set, so ablation 6 reports its centroid (adaptive hit-and-run) together with each farmer's min-max range over the core, or NaN when the core is empty. Parameter sweeps check stability through the least-core epsilon: the core is non-empty exactly when epsilon* <= 0.
-
-Summary tables and figures for all ablations are in [`results/SUMMARY.md`](results/SUMMARY.md).
