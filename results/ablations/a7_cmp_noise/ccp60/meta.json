@@ -1,0 +1,49 @@
+{
+  "name": "a7_cmp_noise/ccp60",
+  "description": "OBJECTIVE\n    Ablation 7 - WHEN DOES A SHARING RULE BECOME UNSTABLE?  Sensitivity to the farmer-specific\n    sequestration noise  CMP_ij = CMP_j * (1 + U(-cmp_noise, +cmp_noise))   (App. B.5; the paper does\n    not describe this noise and the baseline uses 0.20).\n\n    Why this knob: stability is lost when some sub-coalition T can do better than its share, i.e.\n    vhat(T) > x(T).  Area-proportional pays every farmer per hectare and ignores carbon yield, so a\n    farmer with a low CMP draw is over-paid; the remaining farmers can block by leaving without\n    them (blockers.csv: the worst blocking coalitions are 12-14 of the 15 farmers, with a slightly\n    higher mean CMP than the panel).  Noise widens that gap.  Shapley only breaks at high carbon prices.\n    Budget noise (eps_i, Eq. 46) is a weak lever: up to sd=clip=0.5 it changes nothing (the budget\n    constraint does not bind at the grand coalition because private yield gains cover the outlay);\n    only near 0.8-0.95, when some budgets are almost zero, does it start to matter.  The control\n    sweep documents this.\n\n    Outputs (results/ablations/a7_cmp_noise/):\n        ccp<C>/raw.csv, summary.csv, meta.json   one standard sweep per carbon price C (the price\n                                                 interacts strongly: Shapley only breaks at C >~ 150)\n        unstable.csv     one row per (ccp, cmp_noise, panel, mechanism) that is NOT stable:\n                         #blocking coalitions and max excess  -> \"which panels are unstable\"\n        blockers.csv     for the largest noise in the grid: the WORST blocking coalition of every\n                         unstable (ccp, panel, mechanism): members, area, their mean CMP vs the panel\n                         mean, vhat(T), x(T), excess  -> \"who blocks and why\"\n        control_budget_noise/   same panels, budget noise sd=clip varied at fixed cmp_noise, ccp\n    Figures (results/figures/): a7_instability_curves.png, a7_instability_panels.png\n\n    The baseline Params are NOT changed; every panel keeps its farm sizes and budget noise because the\n    RNG draw order (sizes -> budget noise -> CMP noise) is unchanged, only the CMP noise is rescaled.",
+  "key": "cmp_noise",
+  "values": [
+    0.2,
+    0.4,
+    0.6,
+    0.8,
+    0.9,
+    0.95,
+    0.99
+  ],
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51
+  ],
+  "n_farmers": 15,
+  "level": "stability",
+  "baseline": {
+    "ccp": 60.0,
+    "fix_mrv": 2000.0,
+    "var_mrv": 80.0,
+    "delta": 0.7,
+    "fix_t": 1000.0,
+    "var_t": 10.0,
+    "budget_per_ha": 140.0,
+    "yield_t_per_ha": 4.0,
+    "crop_price": 880.0,
+    "farm_size_min": 0.1,
+    "farm_size_max": 2.0,
+    "lognormal_mu": -0.5,
+    "lognormal_sigma": 1.0,
+    "budget_noise_sd": 0.5,
+    "budget_noise_clip": 0.5,
+    "cmp_noise": 0.5,
+    "feas_tol": 1e-09,
+    "stab_tol": 1e-06
+  },
+  "runtime_s": 11.7
+}

@@ -1,0 +1,52 @@
+{
+  "name": "a1_budget",
+  "description": "OBJECTIVE\n    Ablation 1 (Sec. 7.1, Table 2) - EFFECT OF THE FARMER BUDGET.\n    Vary the mean budget per hectare b-bar (Eq. 46) with every farmer's relative endowment (1+eps_i) held\n    fixed, and track: solo feasibility, sum of solo values, coalition value v(N), pooled / private split,\n    practice adoption (budget-hungry practices such as biochar can only enter when budgets allow),\n    and the stability of the allocation rules.  The paper grid is 140/200/400/600 $/ha; lower budgets\n    (0-100) are added because budget only binds when it is scarce.",
+  "key": "budget_per_ha",
+  "values": [
+    0.0,
+    25.0,
+    50.0,
+    75.0,
+    100.0,
+    140.0,
+    200.0,
+    400.0,
+    600.0,
+    1000.0
+  ],
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51
+  ],
+  "n_farmers": 15,
+  "level": "stability",
+  "baseline": {
+    "ccp": 60.0,
+    "fix_mrv": 2000.0,
+    "var_mrv": 80.0,
+    "delta": 0.7,
+    "fix_t": 1000.0,
+    "var_t": 10.0,
+    "budget_per_ha": 140.0,
+    "yield_t_per_ha": 4.0,
+    "crop_price": 880.0,
+    "farm_size_min": 0.1,
+    "farm_size_max": 2.0,
+    "lognormal_mu": -0.5,
+    "lognormal_sigma": 1.0,
+    "budget_noise_sd": 0.5,
+    "budget_noise_clip": 0.5,
+    "cmp_noise": 0.5,
+    "feas_tol": 1e-09,
+    "stab_tol": 1e-06
+  },
+  "runtime_s": 16.6
+}

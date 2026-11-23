@@ -1,0 +1,47 @@
+{
+  "name": "a7_cmp_noise/control_budget_noise",
+  "description": "CONTROL: budget noise sd=clip varied at cmp_noise=0.95, ccp=150",
+  "key": "budget_noise_sd",
+  "values": [
+    0.0,
+    0.2,
+    0.5,
+    0.8,
+    0.95
+  ],
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51
+  ],
+  "n_farmers": 15,
+  "level": "stability",
+  "baseline": {
+    "ccp": 150.0,
+    "fix_mrv": 2000.0,
+    "var_mrv": 80.0,
+    "delta": 0.7,
+    "fix_t": 1000.0,
+    "var_t": 10.0,
+    "budget_per_ha": 140.0,
+    "yield_t_per_ha": 4.0,
+    "crop_price": 880.0,
+    "farm_size_min": 0.1,
+    "farm_size_max": 2.0,
+    "lognormal_mu": -0.5,
+    "lognormal_sigma": 1.0,
+    "budget_noise_sd": 0.5,
+    "budget_noise_clip": 0.5,
+    "cmp_noise": 0.95,
+    "feas_tol": 1e-09,
+    "stab_tol": 1e-06
+  },
+  "runtime_s": 8.3
+}

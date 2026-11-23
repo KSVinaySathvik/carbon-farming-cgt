@@ -1,0 +1,7 @@
+numpy>=1.26
+scipy>=1.11
+pandas>=2.0
+matplotlib>=3.7
+cvxpy>=1.4        # HiGHS fallback only
+gurobipy>=11      # default back-end, falls back to HiGHS without a licence
+pytest>=7

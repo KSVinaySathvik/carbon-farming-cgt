@@ -1,0 +1,28 @@
+{
+  "name": "a4_population",
+  "values": [
+    5,
+    10,
+    15,
+    25,
+    50,
+    100,
+    250,
+    500,
+    1000
+  ],
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51
+  ],
+  "level": "light",
+  "description": "OBJECTIVE\n    Ablation 4 (Sec. 7.3, Table 5) - EFFECT OF SCALING.\n      (i)  the MRV scale exponent delta in C_MRV = Fix_MRV + Var_MRV * A^delta (delta -> 1: linear costs,\n           no economies of scale; delta -> 0: area-independent costs).  Paper grid 0 ... 1.0.\n      (ii) population scaling (Sec. 7.5): number of farmers n = 5 ... 1000 at fixed farm-size\n           distribution, to show how the cooperative gain per farmer, the certification cost per\n           hectare and solo feasibility evolve with the size of the pool (grand coalition only; the\n           per-coalition allocation analysis is restricted to n <= 16 and is not needed here)."
+}
