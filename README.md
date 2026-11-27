@@ -1,21 +1,19 @@
 # Cooperative Game Theory for Smallholder Carbon Farming
 
-[![tests](https://github.com/SummmerKing/carbon-farming-cgt/actions/workflows/tests.yml/badge.svg)](https://github.com/SummmerKing/carbon-farming-cgt/actions/workflows/tests.yml)
+This repository contains the code and results for the paper "A Cooperative Game Theoretic Approach to Sustainable, Smallholder Carbon Farming" (Game Theory Lab, IISc).
 
-Code for *A Cooperative Game Theoretic Approach to Sustainable, Smallholder Carbon Farming* (Game Theory Lab, IISc).
-
-Carbon credits could pay smallholder farmers for adopting practices such as direct seeded rice, alternate wetting and drying or biochar, but monitoring, reporting and verification (MRV) and transaction costs are largely fixed, so a farm of under one hectare cannot pay for certification alone. This project models farmers who pool their land into a coalition that is certified together:
+Carbon credits could pay smallholder farmers for adopting practices such as direct seeded rice, alternate wetting and drying or biochar, but monitoring, reporting and verification (MRV) and transaction costs are largely fixed, so a farm of under one hectare cannot pay for certification alone. The paper models farmers who pool their land into a coalition that is certified together, in two steps:
 
 1. **Joint portfolio optimization.** For any coalition S, choose a practice portfolio for each member to maximize total economic surplus (carbon revenue plus private yield and cost effects, minus certification cost), subject to each farmer's budget and affordability constraints. The problem decomposes by farmer, so v(S) is computed exactly for all 2^15 coalitions in a fraction of a second.
-2. **Sharing the pooled surplus.** Compare the Shapley value, the core (centroid and per-farmer range), the least core and the nucleolus against area-proportional and attributable-revenue baselines, and test each allocation for blocking coalitions.
+2. **Sharing the pooled surplus.** The Shapley value, the core (centroid and per-farmer range), the least core and the nucleolus are compared with area-proportional and attributable-revenue baselines, and each allocation is tested for blocking coalitions.
 
-## Key findings
+## Results
 
-On 10 benchmark panels of 15 farmers (exact, all coalitions):
+On 10 benchmark panels of 15 farmers, with every coalition evaluated exactly:
 
-- **No farmer can certify alone** at any carbon price under the baseline budget. Even with the budget limit removed, the median solo break-even price is about $432/tCO2e, against a baseline of $60.
-- **The grand coalition certifies in every panel**, and its pooled carbon revenue covers certification from a median of about $44/tCO2e.
-- **The core is non-empty in every run**, so the least core and the nucleolus are always stable. Area-proportional sharing becomes unstable when farmers' sequestration potential varies widely (at $150/tCO2e and high variation it is stable in only 10-50% of panels). The Shapley value holds up much better.
+- No farmer can certify alone at any carbon price under the baseline budget. Even with the budget limit removed, the median solo break-even price is about $432/tCO2e, against a baseline of $60.
+- The grand coalition certifies in every panel, and its pooled carbon revenue covers certification from a median of about $44/tCO2e.
+- The core is non-empty in every run, so the least core and the nucleolus are always stable. Area-proportional sharing becomes unstable when sequestration potential varies widely across farmers (at $150/tCO2e and high variation it is stable in only 10-50% of panels). The Shapley value holds up much better.
 
 ![Effect of farm size on the value of cooperation](results/figures/a2_farm_scale.png)
 
@@ -23,27 +21,18 @@ On 10 benchmark panels of 15 farmers (exact, all coalitions):
 
 All tables and figures are in [`results/SUMMARY.md`](results/SUMMARY.md).
 
-## Layout
+## Repository Structure
 
-```
-carbonfarm/
-  config.py              baseline parameters (Table 1), seeds, paths
-  data/                  practice tables (App. B.1-B.3), farmer panels (App. B.5), Instance
-  model/                 portfolio enumeration, exact coalition solver (SPO / JPO / v(S)), MILP check
-  game/                  Shapley, least core, nucleolus, core geometry, baselines, stability
-  pipeline.py            analyze(instance) -> shares, payoffs, stability
-experiments/
-  run_baseline.py        one farmer panel, any n
-  ablations/             a1 budget, a2 farm scale, a3 cost components, a4 MRV scaling,
-                         a5 carbon price, a6 allocation comparison, a7 sequestration noise
-  run_all.py             tests + all ablations + results/SUMMARY.md
-  check_structure.py     superadditivity and convexity over all coalitions
-tests/                   paper instances and solver tests on games with known answers
-data/Dataset_USD/        practice tables as CSV
-results/                 outputs of the runs in the paper
-```
+- **carbonfarm/config.py**: baseline parameters (Table 1 of the paper), seeds and paths.
+- **carbonfarm/data/**: practice tables (Appendix B.1-B.3) and farmer panels (Appendix B.5).
+- **carbonfarm/model/**: portfolio enumeration, the exact coalition solver for single-farmer and joint portfolio optimization, and a MILP check.
+- **carbonfarm/game/**: Shapley value, least core, nucleolus, core geometry, baseline allocations and stability tests.
+- **experiments/**: the baseline run, the seven ablations, a structure check (superadditivity and convexity over all coalitions) and `run_all.py`, which runs everything.
+- **tests/**: the paper instances and solver tests on games with known answers.
+- **data/Dataset_USD/**: practice tables as CSV.
+- **results/**: outputs of the runs reported in the paper.
 
-## Setup and usage
+## Setup and Usage
 
 ```bash
 pip install -r requirements.txt
